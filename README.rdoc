@@ -1,0 +1,17 @@
+== Sample DemoApp
+
+
+== Getting Started
+
+1. - Edit database.yml.example
+   - rake db:create
+   - rake db:migrate
+
+2. Default admin user will get create on running migration
+      
+      credentials: email- admin@admin.com
+                   password - admin123
+
+3. Create dummy data with -
+      rake db:seed
+   

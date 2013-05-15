@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Studypad</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <%= link_to 'StudyPad DemoApp', root_path, :class => 'brand' %>
+        <div class="nav-collapse">
+          <ul class="nav">
+            <% if user_signed_in? %>
+              <li><%= link_to 'Edit profile', edit_user_registration_path %></li>
+              <li><%= link_to "Logout", destroy_user_session_path, method: :delete %></li>
+              <% if current_user.is_admin? %>
+                <li><%= link_to 'Create An Editor', new_user_registration_path %></li>
+              <% end %>  
+            <% else %>
+              <li><%= link_to "Sign up", new_user_registration_path %></li>
+              <li><%= link_to "Login", new_user_session_path %></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class='row'>
+      <div class='span9'>
+        <% flash.each do |name, msg| %>
+          <%= content_tag :div, msg, id: "flash_#{name}" %>
+        <% end %>
+        <%= yield %>
+      </div>
+      <div class='span3'>
+        <% if user_signed_in? %>
+          Logged in as <strong><%= current_user.email %></strong>.
+        <% end %>  
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
