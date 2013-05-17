@@ -1,9 +1,14 @@
 class ArticlesController < ApplicationController
   
   load_and_authorize_resource
+  before_filter :check_to_publish, :only => [:create, :update]
   
   def index
-    @articles = user_signed_in? ? Article.all : Article.published
+    if user_signed_in?
+      @articles = Article.find(:all, :conditions => ["published = true or user_id = #{current_user.id}"])
+    else
+      @articles = Article.published
+    end
   end
 
   def show
@@ -17,7 +22,7 @@ class ArticlesController < ApplicationController
   end
 
   def create
-    @article = Article.new(params[:article])
+    @article = current_user.articles.new(params[:article])
     if @article.save
       redirect_to @article, notice: "Article was successfully created."
     else
@@ -32,10 +37,11 @@ class ArticlesController < ApplicationController
       render "edit"
     end
   end
-
-  def destroy
-    @article.destroy
-    redirect_to articles_url
-  end
   
+  private
+  
+  def check_to_publish
+     @article.published = false if current_user.is_reporter? and !@article.published
+  end  
+    
 end
